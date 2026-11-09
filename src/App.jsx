@@ -161,6 +161,7 @@ export default function App() {
       user_email: formData.get('user_email')?.trim() || '',
       message: formData.get('message')?.trim() || '',
       reply_to: formData.get('user_email')?.trim() || '',
+      title: 'Portfolio contact form',
     };
 
     try {

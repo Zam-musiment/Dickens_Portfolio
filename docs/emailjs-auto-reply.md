@@ -1,6 +1,6 @@
 # EmailJS Contact Replies and Visitor Auto-Reply
 
-The contact form sends the visitor's message to your inbox. Configure the main template so you can reply directly to the visitor, and enable an auto-reply so they know their message arrived. This provides email-based conversation; it is not a live-chat service.
+The contact form sends the visitor's message to your inbox. Configure the main template so you can reply directly to the visitor, and link the confirmation template as its EmailJS auto-reply so visitors know their message arrived. The app sends only the main template; EmailJS sends the linked confirmation. This provides email-based conversation, not live chat.
 
 The app sends these EmailJS parameters from `src/App.jsx`:
 
@@ -9,15 +9,16 @@ The app sends these EmailJS parameters from `src/App.jsx`:
 - `reply_to` — visitor's email address, for replies from your inbox
 - `message` — visitor's message
 - `from_name` — visitor's name (also available for the main template)
+- `title` — `Portfolio contact form` (used in the template subjects and confirmation)
 
 ## 1. Configure the main contact template
 
-In the EmailJS template used by `VITE_EMAILJS_TEMPLATE_ID`, set:
+In the EmailJS **Contact Us** template used by `VITE_EMAILJS_TEMPLATE_ID`, set:
 
 - **To Email:** your monitored inbox
-- **From Name:** `{{user_name}}` (or `{{from_name}}`)
+- **From Name:** `{{user_name}}`
 - **Reply-To:** `{{reply_to}}`
-- **Subject:** `Portfolio contact from {{user_name}}`
+- **Subject:** `Contact Us: {{title}}`
 - **Content type:** HTML or plain text
 
 Use the following content in the main template so the message details are included:
@@ -34,7 +35,7 @@ When you receive a contact email, use **Reply** in your email client. With `Repl
 
 ## 2. Create the visitor confirmation template
 
-Create a separate template in EmailJS for the visitor confirmation:
+In the EmailJS **Auto-Reply** template, set:
 
 - **To Email:** `{{user_email}}`
 - **To Name:** `{{user_name}}`
@@ -71,7 +72,7 @@ Open the **main contact template** in EmailJS, go to its **Auto-Reply** tab, and
 
 ## 4. Set the app's EmailJS environment variables
 
-Add these values to your local `.env` file and to your hosting provider's environment settings:
+Create a `.env` file beside `package.json` in `Dickens_Portfolio` with these values. Use the service ID, **Contact Us** template ID, and public key from EmailJS:
 
 ```dotenv
 VITE_EMAILJS_SERVICE_ID=your_service_id
@@ -79,4 +80,8 @@ VITE_EMAILJS_TEMPLATE_ID=your_main_template_id
 VITE_EMAILJS_PUBLIC_KEY=your_public_key
 ```
 
-Do not put a private key or email account password in the frontend. After configuring the templates, submit a test message with an email address you can access. Confirm that the visitor receives the automatic confirmation and that replying to the message in your inbox addresses the response to the visitor.
+The local `.env` file is git-ignored. Set the same three values in your hosting provider's environment settings to enable the form on the deployed site. Restart the Vite dev server after changing `.env`.
+
+Only use the **public** key in this frontend app. Never put an EmailJS private key or email account password in `.env`, source code, or a public repository. If a private key has been shared or exposed, rotate it in EmailJS.
+
+After configuring and linking both templates, submit a test message using an email address you can access. Confirm that it arrives in your inbox, that the visitor receives the automatic confirmation, and that replying to the inbox message addresses your reply to the visitor.
